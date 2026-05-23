@@ -12,15 +12,30 @@ import {
   Pressable,
   Modal,
 } from 'react-native';
+
 import { ImageBackground } from 'react-native-web';
 import StartBudgetingButton from './StartBudgetingButton';
-import styles from './styles';
+import styles from './utils/styles.js';
 
-const App = () => {
-  const [dailyLimit, setDailyLimit] = useState(0)
-  const [showWarningModal, setShowWarningModal] = useState(false)
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-  const [days, setDays] = useState([
+import ScreenWelcome from './ScreenWelcome';
+import ScreenSetDailyBudget from './ScreenSetDailyBudget.js';
+import ScreenToday from './ScreenToday.js';
+import ScreenCalendar from './ScreenCalendar.js';
+import ScreenSummary from './ScreenSummary';
+
+const Stack = createStackNavigator()
+const Tab = createBottomTabNavigator()
+
+const ScreenMain = ({ navigation, route }) => {
+  const { dailyLimit } = route.params
+
+  //const [ today, setToday ] = useState(2)
+
+  const [ days, setDays ] = useState([
     {key: '1', day: 'Mon', expenseItems: [
                                           {category: 'lunch', amount: 11.90},
                                           {category: 'groceries', amount: 12.33}
@@ -33,42 +48,81 @@ const App = () => {
     {key: '7', day: 'Sun', expenseItems: []},
   ])
 
-  // sets the daily spending budget and starts the app
-  const startBudgeting = () => {
-    if (dailyLimit <= 0) {
-      setShowWarningModal(true)
-      //setTimeout(() => setShowWarningModal(false), 2000)
-    }
-    console.log('Starting budgting, dailyLimit: ', dailyLimit)
-    // navigate to calendar
-  }
-
-  // checking that daily spend limit is a valid number
-  const checkDailyLimit = (value) => {
-    if (value < 0) {
-      console.log("Can't set negative limits!")
-      return
-    } else if (value == '-') {
-      return
-    } else {
-      setDailyLimit(value)
-      console.log("Daily limit set to: ", value)
-    }
-  }
-
-  // returns sum of expenses for a day
-  const countDailySpend = (expenseItems) => {
-    let dailySum = 0
-    for (let i=0; i<expenseItems.length; i++) {
-      if (expenseItems[i].amount != undefined) {
-        console.log('item:', expenseItems[i].amount)
-        dailySum += expenseItems[i].amount
-      }
-    }
-    return dailySum
-  }
-
+  const [ chosenBudgetingDay, setChosenBudgetingDay ] = useState("")
+  const [ valittuPaiva, setValittuPaiva ] = useState("123")
+  const weekdays = [
+    {key: 1, value: 'Monday'},
+    {key: 2, value: 'Tuesday'},
+    {key: 3, value: 'Wednesday'},
+    {key: 4, value: 'Thursday'},
+    {key: 5, value: 'Friday'},
+    {key: 6, value: 'Saturday'},
+    {key: 7, value: 'Sunday'},
+  ]
+  
   return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, size, color}) => {
+          let iconName;
+          /*if (route.name === 'ScreenSummary') {
+            size = focused ? 25 : 20;
+            color = focused ? '#f0f' : '#555';
+          }*/
+        },
+        header: () => null
+      })}
+      tabBarOptions={{
+        activeBackgroundColor: '#f0f',
+        inactiveBackgroundColor: '#999',
+      }}
+      initialRouteName="ScreenCalendar"
+    >
+      <Tab.Screen 
+        name='ScreenToday' 
+        options={{ title: 'Today' }}
+        component={ScreenToday}
+        initialParams={{ dailyLimit: dailyLimit, days: days, valittuPaiva: valittuPaiva,
+          chosenBudgetingDay: chosenBudgetingDay
+         }}
+      />
+      <Tab.Screen 
+        name='ScreenCalendar' 
+        options={{ title: 'Calendar' }}
+        component={ScreenCalendar}
+        initialParams={{ dailyLimit: dailyLimit, days: days, weekdays: weekdays,
+          setChosenBudgetingDay: setChosenBudgetingDay
+        }}
+      />
+      <Tab.Screen 
+        name='ScreenSummary' 
+        options={{ title: 'Summary' }}
+        component={ScreenSummary}
+        initialParams={{ dailyLimit: dailyLimit, days: days }}
+        //options={{ header: () => null }}
+      />
+    </Tab.Navigator>
+  )
+}
+
+const App = () => {
+  const [showWarningModal, setShowWarningModal] = useState(false)
+
+  /*
+    Screens in Stack:
+      1) ScreenWelcome shows in the beginning for 3 seconds (and only once)
+      2) ScreenSetDailyBudget shows after ScreenWelcome and only once
+      3) ScreenMain contains Tab Navigation to screens Today, Calendar and Summary
+  */
+  return (
+    <NavigationContainer>
+      <Stack.Navigator screenOptions={{headerShown: false}}>
+        <Stack.Screen name="ScreenWelcome" component={ScreenWelcome} />
+        <Stack.Screen name="ScreenSetDailyBudget" component={ScreenSetDailyBudget} />
+        <Stack.Screen name="ScreenMain" component={ScreenMain} />
+      </Stack.Navigator>
+    </NavigationContainer>
+    /*
     //<View style={styles.container}>
       <ImageBackground 
         style={styles.image} 
@@ -103,28 +157,9 @@ const App = () => {
             </View>
           </View>
         </Modal>
-        <View style={styles.body}>
-          <Text style={styles.bodytext}>Welcome</Text>
-          <Text style={styles.bodytext}>Set your dailt budget limit</Text>
-          <Text style={styles.bodytext}>Limit: {dailyLimit}</Text>
-          <TextInput 
-            style={styles.textinput} 
-            placeholder='amount' 
-            onChangeText={(value) => checkDailyLimit(value)}
-            keyboardType='numeric'
-          />
-          <StartBudgetingButton onPressFunction={startBudgeting} />
-          <FlatList 
-            data={days} 
-            renderItem={({item}) => (
-              <View>
-                <Text style={styles.summaryText}>{item.day} - {countDailySpend(item.expenseItems)}</Text>
-              </View>
-            )}
-          />
-        </View>
       </ImageBackground>
     //</View>
+    */
   );
 }
 

@@ -12,9 +12,10 @@ const styles = StyleSheet.create({
     //flex: 1,
     width: '100%',
     backgroundColor: '#9ea7d6',
+    textAlign: 'center',
     alignItems: 'center',
     justifyContent: 'center',
-    fontSize: 20,
+    fontSize: 35,
     textTransform: 'uppercase',
   },
   body: {
@@ -37,6 +38,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#555',
     borderRadius: 5,
+    //alignItems: 'center',
+    //justifyContent: 'center',
     textAlign: 'center',
   },
   startbutton: {
