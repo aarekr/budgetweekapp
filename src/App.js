@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   StyleSheet, 
   Text, 
@@ -16,6 +16,7 @@ import {
 import { ImageBackground } from 'react-native-web';
 import StartBudgetingButton from './StartBudgetingButton';
 import styles from './utils/styles.js';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -30,26 +31,14 @@ import ScreenSummary from './ScreenSummary';
 const Stack = createStackNavigator()
 const Tab = createBottomTabNavigator()
 
+
+
+// Main screen of the app holding Tab Navigation to Today, Calendar, and Summary pages
 const ScreenMain = ({ navigation, route }) => {
   const { dailyLimit } = route.params
+  const [ chosenBudgetingDay, setChosenBudgetingDay ] = useState('')
+  //const [ dailyLimit, setDailyLimit ] = useState(0)
 
-  //const [ today, setToday ] = useState(2)
-
-  const [ days, setDays ] = useState([
-    {key: '1', day: 'Mon', expenseItems: [
-                                          {category: 'lunch', amount: 11.90},
-                                          {category: 'groceries', amount: 12.33}
-                                        ]},
-    {key: '2', day: 'Tue', expenseItems: [{category: 'lunch', amount: 9.19}]},
-    {key: '3', day: 'Wed', expenseItems: [{category: 'lunch', amount: 11.90}]},
-    {key: '4', day: 'Thu', expenseItems: []},
-    {key: '5', day: 'Fri', expenseItems: []},
-    {key: '6', day: 'Sat', expenseItems: []},
-    {key: '7', day: 'Sun', expenseItems: []},
-  ])
-
-  const [ chosenBudgetingDay, setChosenBudgetingDay ] = useState("")
-  const [ valittuPaiva, setValittuPaiva ] = useState("123")
   const weekdays = [
     {key: 1, value: 'Monday'},
     {key: 2, value: 'Tuesday'},
@@ -59,7 +48,46 @@ const ScreenMain = ({ navigation, route }) => {
     {key: 6, value: 'Saturday'},
     {key: 7, value: 'Sunday'},
   ]
-  
+
+  // budget data with categories
+  let weekData = [
+    {key: '1', day: 'Monday', expenseItems: []},
+    {key: '2', day: 'Tuesday', expenseItems: []},
+    {key: '3', day: 'Wednesday', expenseItems: []},
+    {key: '4', day: 'Thursday', expenseItems: []},
+    {key: '5', day: 'Friday', expenseItems: []},
+    {key: '6', day: 'Saturday', expenseItems: []},
+    {key: '7', day: 'Sunday', expenseItems: []},
+  ]
+
+  const [ budgetData, setBudgetData ] = useState(weekData)
+
+  useEffect(() => {
+    //setData()
+    getData()
+  }, [])
+
+  const setData = async() => {
+    try {
+      await AsyncStorage.setItem('DATA', JSON.stringify(weekData))
+      console.log('App budgetData set:', budgetData)
+    } catch (error) {
+      console.log('setData budgetData error:', error)
+    }
+  }
+
+  const getData = () => {
+    try {
+      AsyncStorage.getItem('dailyLimit').then(value => {
+        if (value != null) {
+          setDailyLimit(value)
+        }
+      })
+    } catch (error) {
+      console.log('getData dailyLimit virhe:', error)
+    }
+  }
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -76,29 +104,19 @@ const ScreenMain = ({ navigation, route }) => {
         activeBackgroundColor: '#f0f',
         inactiveBackgroundColor: '#999',
       }}
-      initialRouteName="ScreenCalendar"
+      initialRouteName="ScreenToday"
     >
       <Tab.Screen 
         name='ScreenToday' 
         options={{ title: 'Today' }}
         component={ScreenToday}
-        initialParams={{ dailyLimit: dailyLimit, days: days, valittuPaiva: valittuPaiva,
-          chosenBudgetingDay: chosenBudgetingDay
-         }}
-      />
-      <Tab.Screen 
-        name='ScreenCalendar' 
-        options={{ title: 'Calendar' }}
-        component={ScreenCalendar}
-        initialParams={{ dailyLimit: dailyLimit, days: days, weekdays: weekdays,
-          setChosenBudgetingDay: setChosenBudgetingDay
-        }}
+        initialParams={{ dailyLimit: dailyLimit, weekdays: weekdays }}
       />
       <Tab.Screen 
         name='ScreenSummary' 
         options={{ title: 'Summary' }}
         component={ScreenSummary}
-        initialParams={{ dailyLimit: dailyLimit, days: days }}
+        initialParams={{ dailyLimit: dailyLimit }}
         //options={{ header: () => null }}
       />
     </Tab.Navigator>
@@ -122,45 +140,7 @@ const App = () => {
         <Stack.Screen name="ScreenMain" component={ScreenMain} />
       </Stack.Navigator>
     </NavigationContainer>
-    /*
-    //<View style={styles.container}>
-      <ImageBackground 
-        style={styles.image} 
-        source={require('../assets/backgroundpalmbeach.jpg')}
-        resizeMode='center'
-      >
-        <View>
-          <Text style={styles.top}>Budget Week</Text>
-        </View>
-        <Modal 
-          visible={showWarningModal} 
-          transparent
-          animationType='fade'
-          hardwareAccelerated
-          onRequestClose={() => setShowWarningModal(false)}
-        >
-          <View style={styles.centeredView}>
-            <View style={styles.warningModal}>
-              <View style={styles.warningTitle}>
-                <Text style={styles.text}>Warning!</Text>
-              </View>
-              <View style={styles.warningBody}>
-                <Text style={styles.text}>Daily budget must be more than 0</Text>
-              </View>
-              <Pressable 
-                style={styles.warningMobalButton}
-                onPress={() => setShowWarningModal(false)}
-                android_ripple={{color:'#fff'}}
-              >
-                <Text style={styles.text}>OK</Text>
-              </Pressable>
-            </View>
-          </View>
-        </Modal>
-      </ImageBackground>
-    //</View>
-    */
-  );
+  )
 }
 
 export default App;

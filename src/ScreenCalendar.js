@@ -1,40 +1,63 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { SelectList } from 'react-native-dropdown-select-list'
 import styles from './utils/styles';
 import { Button } from 'react-native-web';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function ScreenCalendar({ navigation, route }) {
-  const { dailyLimit, days, weekdays, setChosenBudgetingDay } = route.params;
-  const [ valittuPaiva, setValittuPaiva ] = useState("")
-  const [ selected, setSelected ] = useState("");
+  const { dailyLimit, weekdays } = route.params
+  const [ chosenBudgetingDay, setChosenBudgetingDay ] = useState('')
+  const [ selected, setSelected ] = useState('')
 
-  function asetaPaiva(arvo) {
-    setValittuPaiva(arvo)
-    setChosenBudgetingDay(arvo)
-    console.log("eka :", valittuPaiva)
+  const saveChosenBudgetingDay = async(value) => {
+    try {
+      await AsyncStorage.setItem('chosenBudgetingDay', value)
+      setChosenBudgetingDay(value)
+      console.log("chosenBudgetingDay set to:", value)
+    } catch(error) {
+      console.log('Error in setting chosenBudgetingDay:', error)
+    }
   }
+
+  /*useEffect(() => {
+    getData()
+  }, [])
+
+  const getData = () => {
+    try {
+      AsyncStorage.getItem('dailyLimit').then(value => {
+        if (value != null) {
+          setDailyLimit(value)
+        }
+      })
+    } catch (error) {
+      console.log('getData dailyLimit virhe:', error)
+    }
+  }*/
 
   return (
     <View>
-        <View>
+      <View>
         <Text style={styles.top}>Calendar</Text>
-        </View>
-        <Text style={styles.text}>Your daily budget is {dailyLimit} euros</Text>
-        <Text>Choose day</Text>
-        <SelectList 
-            setSelected={(val) => setSelected(val)} 
-            data={weekdays} 
-            save="value"
-            onSelect={() => {
-                asetaPaiva(selected)
-                //alert(selected)
-            }}
-        />
-        <Text>You chose {valittuPaiva}</Text>
-        <Button title='confirm' onPress={() => asetaPaiva(selected)} />
+      </View>
+      <Text>Your daily budget is: {dailyLimit}</Text>
+      <Text>Choose day</Text>
+      <SelectList 
+          setSelected={(val) => setSelected(val)} 
+          data={weekdays} 
+          save="value"
+          onSelect={() => {
+            saveChosenBudgetingDay(selected)
+            //alert(selected)
+          }}
+      />
+      <Text>You chose {chosenBudgetingDay}</Text>
+      <Button title='confirm' onPress={() => saveChosenBudgetingDay(selected)} />
     </View>
   )
 }
+
+// <Button title='confirm' onPress={() => saveChosenBudgetingDay(selected)} />
 
 export default ScreenCalendar

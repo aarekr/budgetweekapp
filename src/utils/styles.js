@@ -17,6 +17,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     fontSize: 35,
     textTransform: 'uppercase',
+    marginBottom: 50,
   },
   body: {
     flex: 1,
