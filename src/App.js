@@ -37,7 +37,7 @@ const Tab = createBottomTabNavigator()
 const ScreenMain = ({ navigation, route }) => {
   const { dailyLimit } = route.params
   const [ chosenBudgetingDay, setChosenBudgetingDay ] = useState('')
-  //const [ dailyLimit, setDailyLimit ] = useState(0)
+  const [ dailyLimitState, setDailyLimit ] = useState(0)
 
   const weekdays = [
     {key: 1, value: 'Monday'},
