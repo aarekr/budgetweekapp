@@ -9,10 +9,13 @@ function ScreenToday({ navigation, route }) {
   const { dailyLimit, weekdays } = route.params
   const [ chosenBudgetingDay, setChosenBudgetingDay ] = useState('')
   const [ budgetData, setBudgetData ] = useState(0)
-  const [ selected, setSelected ] = useState('')
+  const [ selectedDay, setSelectedDay ] = useState('')
+  const [ selectedCategory, setSelectedCategory ] = useState('')
 
   const [ expense, setExpense ] = useState('')
   const [ category, setCategory ] = useState('')
+
+  const expenseCategories = ['Beer', 'Clothes', 'Food', 'Lunch', 'Transport']
 
   useEffect(() => {
     getBudgetingDayData()
@@ -27,26 +30,20 @@ function ScreenToday({ navigation, route }) {
         }
       })
     } catch (error) {
-      console.log('getData virhe:', error)
+      console.log('ScreenToday getData error:', error)
     }
   }
 
   const getDATA = async () => {
-    console.log('ScreenToday getting DATA')
     try {
       await AsyncStorage.getItem('DATA').then(value => {
         if (value != null) {
           let data = JSON.parse(value)
-          console.log('getDATA data:', data)
-          /*data.map((item) => {
-            console.log('item:', item.day, item.expenseItems)
-          })*/
           setBudgetData(data)
-          console.log('data after set:', budgetData)
         }
       })
     } catch (error) {
-      console.log('getDATA error:', error)
+      console.log('ScreenToday getDATA error:', error)
     }
   }
 
@@ -61,43 +58,31 @@ function ScreenToday({ navigation, route }) {
         }
       }
     }
-    return todaysTotalExpenses
+    return todaysTotalExpenses.toFixed(2)
   }
 
+  // adding an expense to total expenses
   const addExpense = async () => {
-    console.log('adding a new expense')
-    console.log('expense :', expense)
-    console.log('category:', category)
     if (expense <= 0) {
       alert('Expenses must be over 0')
     } else {
       try {
-        console.log('Budgeting for', chosenBudgetingDay)
-        console.log('ScreenToday budgetData:', budgetData)
-        //console.log('ScreenToday budgetData[MON]:', budgetData[0]['expenseItems'])
         for (let i=0; i<7; i++) {
           if (budgetData[i]['day'] == chosenBudgetingDay) {
             let updatedExpenseItems = budgetData[i]['expenseItems'].concat(
-              {'category': category, 'amount': Number(expense)}
+              {'category': selectedCategory, 'amount': Number(expense)}
             )
             budgetData[i]['expenseItems'] = updatedExpenseItems
-            console.log('silmukka budgetData:', budgetData)
             await AsyncStorage.setItem('DATA', JSON.stringify(budgetData))
-            console.log('awaitin jälkeen')
             setExpense('')
             setCategory('')
             setTimeout(() => {
-              console.log('starting to get DATA')
               getDATA()
-              console.log('passed getting  DATA')
             }, 1000)
-            //break
           }
         }
-        //console.log('ScreenToday budgetData[UPD]:', budgetData[0]['expenseItems'])
-        //console.log('ScreenToday budgetData[cBD]:', budgetData[chosenBudgetingDay])
       } catch (error) {
-        console.log('error occurred in setting expense:', error)
+        console.log(' ScreenToday error occurred in setting expense:', error)
       }
     }
   }
@@ -106,9 +91,8 @@ function ScreenToday({ navigation, route }) {
     try {
       await AsyncStorage.setItem('chosenBudgetingDay', value)
       setChosenBudgetingDay(value)
-      console.log("chosenBudgetingDay set to:", value)
     } catch(error) {
-      console.log('Error in setting chosenBudgetingDay:', error)
+      console.log('ScreenToday error in setting chosenBudgetingDay:', error)
     }
   }
 
@@ -116,7 +100,7 @@ function ScreenToday({ navigation, route }) {
     <View>
       <Text style={styles.top}>{chosenBudgetingDay}</Text>
       <View style={{alignItems: 'center'}}>
-        <Text style={{marginBottom: 20}}>Today's expenses so far: {countTodaysTotalExpenses()}</Text>
+        <Text style={{marginBottom: 30}}>Today's expenses so far: {countTodaysTotalExpenses()}</Text>
         <Text>Add a new expense below</Text>
         <TextInput 
           style={{width: 100, borderColor: 'blue', margin: 10}}
@@ -125,28 +109,29 @@ function ScreenToday({ navigation, route }) {
           value={expense}
           keyboardType='numeric'
         />
-        <TextInput 
-          style={{width: 100, borderColor: 'blue', margin: 10}}
-          placeholder='choose expense category' 
-          onChangeText={(value) => {setCategory(value)}}
-          value={category}
+        <SelectList 
+          setSelected={(val) => setSelectedCategory(val)} 
+          data={expenseCategories} 
+          save="value"
+          onSelect={() => {
+            setSelectedCategory(selectedCategory)
+          }}
         />
-        <View style={{marginBottom: 50}}>
+        <View style={{marginTop: 5, marginBottom: 50}}>
           <Button title='Add expense' color='green' onPress={addExpense} />
         </View>
       </View>
       <View style={{alignItems: 'center'}}>
         <Text>Choose day</Text>
         <SelectList 
-            setSelected={(val) => setSelected(val)} 
-            data={weekdays} 
-            save="value"
-            onSelect={() => {
-              saveChosenBudgetingDay(selected)
-              //alert(selected)
-            }}
+          setSelected={(val) => setSelectedDay(val)} 
+          data={weekdays} 
+          save="value"
+          onSelect={() => {
+            saveChosenBudgetingDay(selectedDay)
+          }}
         />
-        <Text>You chose {chosenBudgetingDay}</Text>
+        <Text style={{marginTop: 10}}>You chose {chosenBudgetingDay}</Text>
       </View>
     </View>
   )

@@ -1,15 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  StyleSheet, 
   Text, 
   View, 
   Button, 
-  ScrollView, 
-  RefreshControl, 
-  FlatList,
   TextInput,
-  TouchableHighlight,
-  Pressable,
   Modal,
 } from 'react-native';
 
@@ -25,7 +19,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import ScreenWelcome from './ScreenWelcome';
 import ScreenSetDailyBudget from './ScreenSetDailyBudget.js';
 import ScreenToday from './ScreenToday.js';
-import ScreenCalendar from './ScreenCalendar.js';
 import ScreenSummary from './ScreenSummary';
 
 const Stack = createStackNavigator()
@@ -33,7 +26,7 @@ const Tab = createBottomTabNavigator()
 
 
 
-// Main screen of the app holding Tab Navigation to Today, Calendar, and Summary pages
+// Main screen of the app holding Tab Navigation to Today and Summary pages
 const ScreenMain = ({ navigation, route }) => {
   const { dailyLimit } = route.params
   const [ chosenBudgetingDay, setChosenBudgetingDay ] = useState('')
@@ -63,18 +56,8 @@ const ScreenMain = ({ navigation, route }) => {
   const [ budgetData, setBudgetData ] = useState(weekData)
 
   useEffect(() => {
-    //setData()
     getData()
   }, [])
-
-  const setData = async() => {
-    try {
-      await AsyncStorage.setItem('DATA', JSON.stringify(weekData))
-      console.log('App budgetData set:', budgetData)
-    } catch (error) {
-      console.log('setData budgetData error:', error)
-    }
-  }
 
   const getData = () => {
     try {
@@ -84,7 +67,7 @@ const ScreenMain = ({ navigation, route }) => {
         }
       })
     } catch (error) {
-      console.log('getData dailyLimit virhe:', error)
+      console.log('App.js getData dailyLimit error:', error)
     }
   }
 
@@ -92,11 +75,7 @@ const ScreenMain = ({ navigation, route }) => {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, size, color}) => {
-          let iconName;
-          /*if (route.name === 'ScreenSummary') {
-            size = focused ? 25 : 20;
-            color = focused ? '#f0f' : '#555';
-          }*/
+          // pass
         },
         header: () => null
       })}
@@ -117,15 +96,12 @@ const ScreenMain = ({ navigation, route }) => {
         options={{ title: 'Summary' }}
         component={ScreenSummary}
         initialParams={{ dailyLimit: dailyLimit }}
-        //options={{ header: () => null }}
       />
     </Tab.Navigator>
   )
 }
 
 const App = () => {
-  const [showWarningModal, setShowWarningModal] = useState(false)
-
   /*
     Screens in Stack:
       1) ScreenWelcome shows in the beginning for 3 seconds (and only once)

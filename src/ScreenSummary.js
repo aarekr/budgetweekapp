@@ -4,7 +4,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './utils/styles';
 import { DataTable } from 'react-native-paper'
 import countDailySpend from './functions';
-import { useIsFocused } from '@react-navigation/native';
 
 function ScreenSummary({ navigation, route }) {
   const { dailyLimit } = route.params
@@ -13,8 +12,6 @@ function ScreenSummary({ navigation, route }) {
   const [ summaryByCategories, setSummaryByCategories ] = useState(false)
 
   const compareToDailyBudget = (dayExpenses) => {
-    console.log('compareToDailyBudget:', dayExpenses)
-    console.log('dailyLimit          :', dailyLimit)
     if (dayExpenses > dailyLimit)
       return "OVER BUDGET!!!"
     return "OK"
@@ -25,25 +22,17 @@ function ScreenSummary({ navigation, route }) {
   }, [])
 
   const getDATA = async () => {
-    console.log('ScreenSummary getting DATA')
     try {
       await AsyncStorage.getItem('DATA').then(value => {
         if (value != null) {
           let data = JSON.parse(value)
-          console.log('getDATA data:', data)
-          /*data.map((item) => {
-            console.log('item:', item.day, item.expenseItems)
-          })*/
           setBudgetData(data)
-          console.log('data after set:', budgetData)
         }
       })
     } catch (error) {
-      console.log('getDATA error:', error)
+      console.log('ScreenSummary getDATA error:', error)
     }
   }
-
-  const isFocused = useIsFocused();
 
   const getSummaryByDays = () => {
     return (
@@ -59,7 +48,7 @@ function ScreenSummary({ navigation, route }) {
               ? budgetData.map((item) => 
                   <DataTable.Row key={item.key}>
                     <DataTable.Cell>{item.day}</DataTable.Cell>
-                    <DataTable.Cell>{countDailySpend(item.expenseItems)}</DataTable.Cell>
+                    <DataTable.Cell>{countDailySpend(item.expenseItems).toFixed(2)}</DataTable.Cell>
                     <DataTable.Cell>{compareToDailyBudget(countDailySpend(item.expenseItems))}</DataTable.Cell>
                   </DataTable.Row>
                 )
@@ -78,13 +67,9 @@ function ScreenSummary({ navigation, route }) {
       {category: 'Lunch', amount: 0},
       {category: 'Transport', amount: 0},
     ]
-    /*for (let k=0; k<3; k++) {
-      console.log('--->', categoriesAndAmounts[k])
-    }*/
+
     for (let i=0; i<7; i++) {
-      //console.log('item:', budgetData[i])
       for (let j=0; j<budgetData[i].expenseItems.length; j++) {
-        console.log('expense:', budgetData[i].expenseItems[j].category)
         if (budgetData[i].expenseItems[j].category == 'Beer')
           categoriesAndAmounts[0].amount += budgetData[i].expenseItems[j].amount
         else if (budgetData[i].expenseItems[j].category == 'Clothes')
@@ -97,7 +82,6 @@ function ScreenSummary({ navigation, route }) {
           categoriesAndAmounts[4].amount += budgetData[i].expenseItems[j].amount
       }
     }
-    console.log('IN THE END:', categoriesAndAmounts)
     return categoriesAndAmounts
   }
 
@@ -114,7 +98,7 @@ function ScreenSummary({ navigation, route }) {
               ? getCategoriesAndSpends().map((item) => 
                   <DataTable.Row key={item.category}>
                     <DataTable.Cell>{item.category}</DataTable.Cell>
-                    <DataTable.Cell>{item.amount}</DataTable.Cell>
+                    <DataTable.Cell>{item.amount.toFixed(2)}</DataTable.Cell>
                   </DataTable.Row>
                 )
               : null
@@ -153,15 +137,8 @@ function ScreenSummary({ navigation, route }) {
           ? getSummaryByCategories()
           : null
       }
-      <Text>{isFocused ? 'focused' : 'unfocused'}</Text>
     </View>
   )
 }
 
 export default ScreenSummary
-
-/*
-      <View style={{marginBottom: 10}}>
-        <Button title='Update Summary' color='green' onPress={getDATA} />
-      </View>
-*/
