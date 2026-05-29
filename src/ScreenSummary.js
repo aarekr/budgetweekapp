@@ -3,7 +3,7 @@ import { Text, View, Button } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './utils/styles';
 import { DataTable } from 'react-native-paper'
-import countDailySpend from './functions';
+import countDailySpend from './functions'
 
 function ScreenSummary({ navigation, route }) {
   const { dailyLimit } = route.params
@@ -23,10 +23,11 @@ function ScreenSummary({ navigation, route }) {
 
   const getDATA = async () => {
     try {
-      await AsyncStorage.getItem('DATA').then(value => {
+      await AsyncStorage.getItem('NewDATA').then(value => {
         if (value != null) {
           let data = JSON.parse(value)
           setBudgetData(data)
+          console.log('ScreenSummary getDATA:', data)
         }
       })
     } catch (error) {
@@ -85,6 +86,25 @@ function ScreenSummary({ navigation, route }) {
     return categoriesAndAmounts
   }
 
+  const resetBudgetData = async() => {
+    console.log('ScreenSummary reseting budget')
+    let resettedBudget = [
+      {key: '1', day: 'Monday', expenseItems: []},
+      {key: '2', day: 'Tuesday', expenseItems: []},
+      {key: '3', day: 'Wednesday', expenseItems: []},
+      {key: '4', day: 'Thursday', expenseItems: []},
+      {key: '5', day: 'Friday', expenseItems: []},
+      {key: '6', day: 'Saturday', expenseItems: []},
+      {key: '7', day: 'Sunday', expenseItems: []},
+    ]
+    try {
+      await AsyncStorage.setItem('NewDATA', JSON.stringify(resettedBudget))
+      console.log('ScreenSummary budget reset:', resettedBudget)
+    } catch (error) {
+      console.log('ScreenSummary budget reset error:', error)
+    }
+  }
+
   const getSummaryByCategories = () => {
     return (
       <View style={{alignItems: 'center'}}>
@@ -137,6 +157,9 @@ function ScreenSummary({ navigation, route }) {
           ? getSummaryByCategories()
           : null
       }
+      <View>
+        <Button title='Reset budget to zero' color='red' onPress={resetBudgetData} />
+      </View>
     </View>
   )
 }

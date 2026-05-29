@@ -7,16 +7,13 @@ import styles from './utils/styles';
 function ScreenSetDailyBudget({ navigation, route }) {
   const [ dailyLimit, setDailyLimit ] = useState(0)
   let weekData = [
-    {key: '1', day: 'Mon', expenseItems: [
-                                          {category: 'lunch', amount: 11.90},
-                                          {category: 'groceries', amount: 12.33}
-                                        ]},
-    {key: '2', day: 'Tue', expenseItems: [{category: 'lunch', amount: 9.19}]},
-    {key: '3', day: 'Wed', expenseItems: [{category: 'lunch', amount: 11.90}]},
-    {key: '4', day: 'Thu', expenseItems: []},
-    {key: '5', day: 'Fri', expenseItems: []},
-    {key: '6', day: 'Sat', expenseItems: []},
-    {key: '7', day: 'Sun', expenseItems: []},
+    {key: '1', day: 'Monday', expenseItems: []},
+    {key: '2', day: 'Tuesday', expenseItems: []},
+    {key: '3', day: 'Wednesday', expenseItems: []},
+    {key: '4', day: 'Thursday', expenseItems: []},
+    {key: '5', day: 'Friday', expenseItems: []},
+    {key: '6', day: 'Saturday', expenseItems: []},
+    {key: '7', day: 'Sunday', expenseItems: []},
   ]
 
   // checking that daily spend limit is a valid number
@@ -35,7 +32,7 @@ function ScreenSetDailyBudget({ navigation, route }) {
       setDailyLimit(value)
       console.log("Daily limit set to: ", value)
       try {
-        await AsyncStorage.setItem('budgetData', weekData)
+        await AsyncStorage.setItem('NewDATA', JSON.stringify(weekData))
         console.log('ScreenSetDailyBudget budgetData set:', weekData)
       } catch (error) {
         console.log('ScreenSetDailyBudget setData budgetData error:', error)

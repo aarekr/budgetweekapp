@@ -36,7 +36,7 @@ function ScreenToday({ navigation, route }) {
 
   const getDATA = async () => {
     try {
-      await AsyncStorage.getItem('DATA').then(value => {
+      await AsyncStorage.getItem('NewDATA').then(value => {
         if (value != null) {
           let data = JSON.parse(value)
           setBudgetData(data)
@@ -63,17 +63,24 @@ function ScreenToday({ navigation, route }) {
 
   // adding an expense to total expenses
   const addExpense = async () => {
+    console.log('start adding expense')
     if (expense <= 0) {
       alert('Expenses must be over 0')
     } else {
+      console.log('else starts')
       try {
+        console.log('entered try')
         for (let i=0; i<7; i++) {
+          console.log('for loop i:', i)
+          console.log('day & chosenBudgetingDay:', budgetData[i]['day'], chosenBudgetingDay)
           if (budgetData[i]['day'] == chosenBudgetingDay) {
+            console.log('entered if')
             let updatedExpenseItems = budgetData[i]['expenseItems'].concat(
               {'category': selectedCategory, 'amount': Number(expense)}
             )
             budgetData[i]['expenseItems'] = updatedExpenseItems
-            await AsyncStorage.setItem('DATA', JSON.stringify(budgetData))
+            console.log('budgetDATA before setItem:', budgetData)
+            await AsyncStorage.setItem('NewDATA', JSON.stringify(budgetData))
             setExpense('')
             setCategory('')
             setTimeout(() => {

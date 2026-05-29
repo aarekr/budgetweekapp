@@ -14,6 +14,7 @@ Budgeting application for weekly expenses
 * [Complete React Native Tutorial #9 - Tabs Navigation](https://www.youtube.com/watch?v=zEbaeod2QjM)
 * [React Native Stack and Tab Navigator Together](https://www.youtube.com/watch?v=s7ackFpN-GU)
 * [React Native tutorial #13 Simple Form in React-Native | form with state](https://www.youtube.com/watch?v=95IHfh6c1UU)
+* [Full Stack Open](https://fullstackopen.com/)
 * Stack Overflow and other resources found via Google
 
 ### AI/LLM tools
