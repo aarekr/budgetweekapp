@@ -3,7 +3,7 @@ import { Text, View, Pressable, } from 'react-native';
 
 // this screen is shown for 3 seconds when the app starts
 function ScreenWelcome({ navigation }) {
-  setTimeout(() => goToScreenSetDailyBudget(), 3000)
+  setTimeout(() => goToScreenSetDailyBudget(), 10000)
 
   const goToScreenSetDailyBudget = () => {
     navigation.navigate('ScreenSetDailyBudget')

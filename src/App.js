@@ -2,14 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { 
   Text, 
   View, 
-  Button, 
   TextInput,
-  Modal,
 } from 'react-native';
 
-import { ImageBackground } from 'react-native-web';
-import styles from './utils/styles.js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import styles from './utils/styles.js';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';

@@ -5,9 +5,11 @@ Budgeting application for weekly expenses
 * No login functionality since the application is on user's phone and data is not that sensitive
 * Welcome screen greets the user and is shown only once when the app is launched
 * Set Daily Budget Limit screen is shown once after Welcome screen. Daily limit is set
-* Today screen is used for adding daily expenses
-* Calendar screen is used for choosing budgeting days
+* Today screen is used for adding daily expenses and choosing budgeting days
 * Summary screen provides an overview of daily expenses and if they are over budget or not
+
+### Documentation
+* [Documentation]()
 
 ### References and sources
 * [The Complete React Native Course: from Zero to Hero](https://www.youtube.com/watch?v=ANdSdIlgsEw)

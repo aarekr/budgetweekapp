@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import styles from './utils/styles';
 import { DataTable } from 'react-native-paper';
 import { SelectList } from 'react-native-dropdown-select-list'
-import styles from './utils/styles';
 
 function ScreenToday({ navigation, route }) {
   const { dailyLimit, weekdays } = route.params
@@ -102,7 +102,7 @@ function ScreenToday({ navigation, route }) {
         <Text style={{marginBottom: 10}}>Today's expenses so far: {countTodaysTotalExpenses()}</Text>
         <Text>Add a new expense below</Text>
         <TextInput 
-          style={{width: 100, borderColor: 'blue', margin: 10}}
+          style={{width: 100, borderColor: 'blue', margin: 10, textAlign: 'center'}}
           placeholder='expense amount' 
           onChangeText={(value) => {setExpense(value)}}
           value={expense}
