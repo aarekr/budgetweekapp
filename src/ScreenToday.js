@@ -11,7 +11,6 @@ function ScreenToday({ navigation, route }) {
   const [ budgetData, setBudgetData ] = useState(0)
   const [ selectedDay, setSelectedDay ] = useState('')
   const [ selectedCategory, setSelectedCategory ] = useState('')
-
   const [ expense, setExpense ] = useState('')
   const [ category, setCategory ] = useState('')
 
@@ -63,23 +62,16 @@ function ScreenToday({ navigation, route }) {
 
   // adding an expense to total expenses
   const addExpense = async () => {
-    console.log('start adding expense')
     if (expense <= 0) {
       alert('Expenses must be over 0')
     } else {
-      console.log('else starts')
       try {
-        console.log('entered try')
         for (let i=0; i<7; i++) {
-          console.log('for loop i:', i)
-          console.log('day & chosenBudgetingDay:', budgetData[i]['day'], chosenBudgetingDay)
           if (budgetData[i]['day'] == chosenBudgetingDay) {
-            console.log('entered if')
             let updatedExpenseItems = budgetData[i]['expenseItems'].concat(
               {'category': selectedCategory, 'amount': Number(expense)}
             )
             budgetData[i]['expenseItems'] = updatedExpenseItems
-            console.log('budgetDATA before setItem:', budgetData)
             await AsyncStorage.setItem('NewDATA', JSON.stringify(budgetData))
             setExpense('')
             setCategory('')
@@ -107,7 +99,7 @@ function ScreenToday({ navigation, route }) {
     <View>
       <Text style={styles.top}>{chosenBudgetingDay}</Text>
       <View style={{alignItems: 'center'}}>
-        <Text style={{marginBottom: 30}}>Today's expenses so far: {countTodaysTotalExpenses()}</Text>
+        <Text style={{marginBottom: 10}}>Today's expenses so far: {countTodaysTotalExpenses()}</Text>
         <Text>Add a new expense below</Text>
         <TextInput 
           style={{width: 100, borderColor: 'blue', margin: 10}}
@@ -124,7 +116,7 @@ function ScreenToday({ navigation, route }) {
             setSelectedCategory(selectedCategory)
           }}
         />
-        <View style={{marginTop: 5, marginBottom: 50}}>
+        <View style={{marginTop: 5, marginBottom: 20}}>
           <Button title='Add expense' color='green' onPress={addExpense} />
         </View>
       </View>
@@ -138,7 +130,7 @@ function ScreenToday({ navigation, route }) {
             saveChosenBudgetingDay(selectedDay)
           }}
         />
-        <Text style={{marginTop: 10}}>You chose {chosenBudgetingDay}</Text>
+        <Text style={{marginTop: 5}}>You chose {chosenBudgetingDay}</Text>
       </View>
     </View>
   )

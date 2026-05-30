@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 
 import { ImageBackground } from 'react-native-web';
-import StartBudgetingButton from './StartBudgetingButton';
 import styles from './utils/styles.js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -41,19 +40,6 @@ const ScreenMain = ({ navigation, route }) => {
     {key: 6, value: 'Saturday'},
     {key: 7, value: 'Sunday'},
   ]
-
-  // budget data with categories
-  let weekData = [
-    {key: '1', day: 'Monday', expenseItems: []},
-    {key: '2', day: 'Tuesday', expenseItems: []},
-    {key: '3', day: 'Wednesday', expenseItems: []},
-    {key: '4', day: 'Thursday', expenseItems: []},
-    {key: '5', day: 'Friday', expenseItems: []},
-    {key: '6', day: 'Saturday', expenseItems: []},
-    {key: '7', day: 'Sunday', expenseItems: []},
-  ]
-
-  const [ budgetData, setBudgetData ] = useState(weekData)
 
   useEffect(() => {
     getData()
@@ -105,8 +91,8 @@ const App = () => {
   /*
     Screens in Stack:
       1) ScreenWelcome shows in the beginning for 3 seconds (and only once)
-      2) ScreenSetDailyBudget shows after ScreenWelcome and only once
-      3) ScreenMain contains Tab Navigation to screens Today, Calendar and Summary
+      2) ScreenSetDailyBudget shows after ScreenWelcome and only once, asks for daily budget limit
+      3) ScreenMain contains Tab Navigation to screens Today and Summary
   */
   return (
     <NavigationContainer>

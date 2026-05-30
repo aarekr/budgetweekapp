@@ -6,7 +6,8 @@ import styles from './utils/styles';
 // this screen is used for setting the daily budget amount/limit
 function ScreenSetDailyBudget({ navigation, route }) {
   const [ dailyLimit, setDailyLimit ] = useState(0)
-  let weekData = [
+  
+  let weekBudgetData = [
     {key: '1', day: 'Monday', expenseItems: []},
     {key: '2', day: 'Tuesday', expenseItems: []},
     {key: '3', day: 'Wednesday', expenseItems: []},
@@ -32,8 +33,8 @@ function ScreenSetDailyBudget({ navigation, route }) {
       setDailyLimit(value)
       console.log("Daily limit set to: ", value)
       try {
-        await AsyncStorage.setItem('NewDATA', JSON.stringify(weekData))
-        console.log('ScreenSetDailyBudget budgetData set:', weekData)
+        await AsyncStorage.setItem('NewDATA', JSON.stringify(weekBudgetData))
+        console.log('ScreenSetDailyBudget budgetData set:', weekBudgetData)
       } catch (error) {
         console.log('ScreenSetDailyBudget setData budgetData error:', error)
       }
@@ -50,7 +51,7 @@ function ScreenSetDailyBudget({ navigation, route }) {
       <View style={{alignContent: 'center'}}>
         <Text style={{textAlign: 'center'}}>Limit set to: {dailyLimit}</Text>
         <TextInput 
-          style={{width: 200, margin: 10}}
+          style={styles.textinput}
           placeholder='amount' 
           onChangeText={(value) => checkAndSetDailyLimit(value)}
           keyboardType='numeric'

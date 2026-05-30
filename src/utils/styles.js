@@ -35,13 +35,15 @@ const styles = StyleSheet.create({
     margin: 2,
   },
   textinput: {
-    width: 70,
+    width: 200,
     borderWidth: 1,
     borderColor: '#555',
     borderRadius: 5,
-    //alignItems: 'center',
-    //justifyContent: 'center',
+    alignItems: 'center',
     textAlign: 'center',
+    marginLeft: '38%',
+    marginTop: 10,
+    marginBottom: 10,
   },
   startbutton: {
     width: 120,

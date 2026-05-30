@@ -27,7 +27,6 @@ function ScreenSummary({ navigation, route }) {
         if (value != null) {
           let data = JSON.parse(value)
           setBudgetData(data)
-          console.log('ScreenSummary getDATA:', data)
         }
       })
     } catch (error) {
@@ -86,8 +85,8 @@ function ScreenSummary({ navigation, route }) {
     return categoriesAndAmounts
   }
 
+  // this part should ask for user confirmation that user wants to delete current data
   const resetBudgetData = async() => {
-    console.log('ScreenSummary reseting budget')
     let resettedBudget = [
       {key: '1', day: 'Monday', expenseItems: []},
       {key: '2', day: 'Tuesday', expenseItems: []},
@@ -99,7 +98,6 @@ function ScreenSummary({ navigation, route }) {
     ]
     try {
       await AsyncStorage.setItem('NewDATA', JSON.stringify(resettedBudget))
-      console.log('ScreenSummary budget reset:', resettedBudget)
     } catch (error) {
       console.log('ScreenSummary budget reset error:', error)
     }
