@@ -9,7 +9,7 @@ Budgeting application for weekly expenses
 * Summary screen provides an overview of daily expenses and if they are over budget or not
 
 ### Documentation
-* [Documentation]()
+* [Documentation](https://github.com/aarekr/budgetweekapp/blob/main/documentation/Document%20-%20Budget%20Week%20App.pdf)
 
 ### References and sources
 * [The Complete React Native Course: from Zero to Hero](https://www.youtube.com/watch?v=ANdSdIlgsEw)
